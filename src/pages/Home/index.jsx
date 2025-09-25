@@ -1,11 +1,14 @@
 import Header from '@/utils/components/Header';
-import { clearToken, logout, getMe } from '@/utils/api';
+import TweetCard from '@/utils/components/TweetCard';
+import MakeTweetCard from '@/utils/components/MakeTweetCard';
+import { clearToken, logout, getMe, getAllTweets } from '@/utils/api';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
 const Home = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  const [tweets, setTweets] = useState([]);
   // const [error, setError] = useState('');
 
   useEffect(() => {
@@ -14,8 +17,14 @@ const Home = () => {
       console.log(response);
       setUser(response);
     }
+    const fetchTweets = async () => {
+      const response = await getAllTweets();
+      console.log(response);
+      setTweets(response);
+    }
     fetchUser();
-  }, [navigate]);
+    fetchTweets();
+  }, [navigate, setTweets]);
 
   const handleLogout = async () => {
     try {
@@ -29,7 +38,15 @@ const Home = () => {
     }
   };
 
-  return <Header username={user?.username} onLogout={handleLogout} />;
+  return (
+    <div className='h-full min-h-screen w-full'>
+      <Header username={user?.username} onLogout={handleLogout} />;
+      <MakeTweetCard />
+      {tweets.map((tweet) => (
+        <TweetCard key={tweet.id} tweet={tweet} />
+      ))}
+    </div>
+  )
 };
 
 export default Home;
