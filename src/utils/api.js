@@ -24,3 +24,15 @@ export async function logout() {
     const {data} = await axios.post(`${API_BASE}/users/logout`);
     return data;
 }
+
+export async function getAllTweets() {
+    const { data } = await axios.get(`${API_BASE}/tweets`);
+    return data;
+}
+
+export async function postTweet({ title, content }) {
+    const token = getToken();
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    const { data } = await axios.post(`${API_BASE}/tweets`, { title, content }, { headers });
+    return data;
+}
